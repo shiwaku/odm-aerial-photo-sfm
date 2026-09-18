@@ -23,6 +23,8 @@
 viewer/index.html      MapLibre で自作 DSM と地理院 1mDSM を terrain/陰影として切替表示
 ```
 
+入出力・パラメータ・所要時間・失敗と対処・結果まで入れた詳細フロー図（Mermaid）は [docs/design.md §5](docs/design.md#5-処理フロー)。
+
 ## 環境
 
 - Windows 11 / Docker Desktop (WSL2) / NVIDIA GPU（動作確認: RTX 4060 8GB, Ryzen 7 5700X, RAM 64GB）
