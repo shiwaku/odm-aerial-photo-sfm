@@ -1,7 +1,8 @@
 # odm-aerial-photo-sfm
 
-国土地理院の空中写真から OpenDroneMap（SfM）で点群・DSM・正射画像を作り、
-地理院標高タイル形式にして地理院公式 DSM と比較する検証リポジトリ。
+国土地理院の空中写真から OpenDroneMap（SfM）で DSM と正射画像を生成し、
+地理院標高タイル形式にして地理院公式の SfM DSM と比較する検証リポジトリ。
+点群（LAZ）は ODM の中間生成物として出力されるが、検証対象ではない。
 
 パイロット: **令和6年能登半島地震 珠洲地区 1/2 撮影 垂直写真（133 枚, Leica DMC III, qv 版）**
 → 結果: [docs/results-suzu_0102.md](docs/results-suzu_0102.md)（GCP なし、地理院 1mDSM との差 RMSE 4.95 m @z15、高さオフセット補正後）
