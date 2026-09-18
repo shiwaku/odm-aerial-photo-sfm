@@ -17,3 +17,7 @@ Thumbs.db
 
 # generated tiles / caches
 output/
+
+# python
+__pycache__/
+*.pyc
