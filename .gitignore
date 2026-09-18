@@ -1,0 +1,16 @@
+# ODM 入出力（巨大）
+datasets/
+*.laz
+*.las
+*.tif
+*.tiff
+*.obj
+*.ply
+*.mtl
+*.b3dm
+*.glb
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
