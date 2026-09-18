@@ -40,8 +40,8 @@
   <label><input type="radio" name="terrain" value="none"> なし</label>
   <div class="row"><b>Raster</b></div>
   <label><input type="checkbox" id="ortho-gsi"> 地理院 正射画像（珠洲 1/2）</label>
-  <label><input type="checkbox" id="ortho-ours"> 自作 正射画像（ODM）</label>
-  <label><input type="checkbox" id="hillshade" checked> 陰影（terrain と同じソース）</label>
+  <label><input type="checkbox" id="ortho-ours" checked> 自作 正射画像（ODM）</label>
+  <label><input type="checkbox" id="hillshade"> 陰影（terrain と同じソース）</label>
   <div class="row">
     誇張 <span id="exag-v">1.0</span>× <input type="range" id="exag" min="0.5" max="4" step="0.1" value="1.0">
   </div>
@@ -117,8 +117,8 @@ const style = {
   layers: [
     { id: 'gsi_std', type: 'raster', source: 'gsi_std', paint: { 'raster-opacity': 0.9 } },
     { id: 'gsi_ortho', type: 'raster', source: 'gsi_ortho', layout: { visibility: 'none' } },
-    { id: 'ours_ortho', type: 'raster', source: 'ours_ortho', layout: { visibility: 'none' } },
-    { id: 'hs_ours', type: 'hillshade', source: 'dem_ours',
+    { id: 'ours_ortho', type: 'raster', source: 'ours_ortho' },
+    { id: 'hs_ours', type: 'hillshade', source: 'dem_ours', layout: { visibility: 'none' },
       paint: { 'hillshade-exaggeration': 0.6, 'hillshade-shadow-color': '#3a3a3a' } },
     { id: 'hs_gsi', type: 'hillshade', source: 'dem_gsi', layout: { visibility: 'none' },
       paint: { 'hillshade-exaggeration': 0.6, 'hillshade-shadow-color': '#3a3a3a' } }
