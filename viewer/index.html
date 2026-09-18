@@ -14,7 +14,15 @@
     background: rgba(255,255,255,.92); padding: 10px 12px; border-radius: 6px;
     font-size: 13px; line-height: 1.6; box-shadow: 0 1px 4px rgba(0,0,0,.3); max-width: 300px;
   }
-  #panel h1 { font-size: 14px; margin: 0 0 6px; }
+  #panel h1 { font-size: 14px; margin: 0 24px 6px 0; }
+  #panel-toggle {
+    position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border: 0; border-radius: 4px;
+    background: transparent; color: #444; font-size: 16px; line-height: 22px; cursor: pointer; padding: 0;
+  }
+  #panel-toggle:hover { background: rgba(0,0,0,.08); }
+  #panel.collapsed > :not(#panel-toggle) { display: none; }
+  #panel.collapsed { padding: 0; width: 34px; height: 34px; }
+  #panel.collapsed #panel-toggle { top: 6px; right: 6px; }
   #panel label { display: block; cursor: pointer; }
   #panel .row { margin-top: 6px; border-top: 1px solid #ddd; padding-top: 6px; }
   #panel input[type=range] { width: 100%; }
@@ -24,6 +32,7 @@
 <body>
 <div id="map"></div>
 <div id="panel">
+  <button id="panel-toggle" type="button" title="パネルを閉じる" aria-label="パネルを閉じる" aria-expanded="true">−</button>
   <h1>珠洲 1/2 撮影 空中写真 → ODM DSM</h1>
   <div><b>Terrain / Hillshade</b></div>
   <label><input type="radio" name="terrain" value="ours" checked> 自作 DSM（ODM）</label>
@@ -145,6 +154,19 @@ function setTerrain(which) {
   if (which === 'none') map.setTerrain(null);
   else map.setTerrain({ source: which === 'ours' ? 'dem_ours' : 'dem_gsi', exaggeration: exag });
 }
+// ---- collapsible panel (state remembered per browser) ------------------------------------
+const panel = document.getElementById('panel');
+const toggle = document.getElementById('panel-toggle');
+function setCollapsed(c) {
+  panel.classList.toggle('collapsed', c);
+  toggle.textContent = c ? '☰' : '−';
+  toggle.title = toggle.ariaLabel = c ? 'パネルを開く' : 'パネルを閉じる';
+  toggle.setAttribute('aria-expanded', String(!c));
+  try { localStorage.setItem('panelCollapsed', c ? '1' : '0'); } catch {}
+}
+toggle.addEventListener('click', () => setCollapsed(!panel.classList.contains('collapsed')));
+try { if (localStorage.getItem('panelCollapsed') === '1') setCollapsed(true); } catch {}
+
 document.querySelectorAll('input[name=terrain]').forEach(el =>
   el.addEventListener('change', e => setTerrain(e.target.value)));
 document.getElementById('hillshade').addEventListener('change', () =>
