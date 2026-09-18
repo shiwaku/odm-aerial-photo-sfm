@@ -1,0 +1,11 @@
+{
+  "name": "Leica DMC III, GSI qv (1/4 downsampled)",
+  "make": "Leica",
+  "model": "DMC III qv",
+  "focal_mm": 92.0,
+  "pixel_um_full": 3.9,
+  "full_size_px": [25728, 14592],
+  "qv_size_px": [6432, 3648],
+  "long_side": "across_track",
+  "notes": "Sensor 100.3 x 56.9 mm. Focal ratio f/long_side = 0.917 -> FocalLengthIn35mmFilm 33 mm. Long image side is across-track (verified from Suzu 0102: course spacing 3150 m / photo spacing 1008 m matches 30% side / 60% forward overlap only with 25728 px across)."
+}

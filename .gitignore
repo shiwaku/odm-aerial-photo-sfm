@@ -14,3 +14,6 @@ datasets/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# generated tiles / caches
+output/
