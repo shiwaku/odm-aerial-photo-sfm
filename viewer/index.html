@@ -34,7 +34,7 @@
   <label><input type="checkbox" id="ortho-ours"> 自作 正射画像（ODM）</label>
   <label><input type="checkbox" id="hillshade" checked> 陰影（terrain と同じソース）</label>
   <div class="row">
-    誇張 <span id="exag-v">1.5</span>× <input type="range" id="exag" min="0.5" max="4" step="0.1" value="1.5">
+    誇張 <span id="exag-v">1.0</span>× <input type="range" id="exag" min="0.5" max="4" step="0.1" value="1.0">
   </div>
   <div class="row" id="info">クリックで標高を表示</div>
 </div>
@@ -114,7 +114,7 @@ const style = {
     { id: 'hs_gsi', type: 'hillshade', source: 'dem_gsi', layout: { visibility: 'none' },
       paint: { 'hillshade-exaggeration': 0.6, 'hillshade-shadow-color': '#3a3a3a' } }
   ],
-  terrain: { source: 'dem_ours', exaggeration: 1.5 }
+  terrain: { source: 'dem_ours', exaggeration: 1.0 }
 };
 
 const map = new maplibregl.Map({
