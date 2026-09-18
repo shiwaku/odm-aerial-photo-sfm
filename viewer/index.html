@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>ODM DSM vs 地理院 1mDSM</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<style>
+  html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+  #map { position: absolute; inset: 0; }
+  #panel {
+    position: absolute; top: 10px; left: 10px; z-index: 1;
+    background: rgba(255,255,255,.92); padding: 10px 12px; border-radius: 6px;
+    font-size: 13px; line-height: 1.6; box-shadow: 0 1px 4px rgba(0,0,0,.3); max-width: 300px;
+  }
+  #panel h1 { font-size: 14px; margin: 0 0 6px; }
+  #panel label { display: block; cursor: pointer; }
+  #panel .row { margin-top: 6px; border-top: 1px solid #ddd; padding-top: 6px; }
+  #panel input[type=range] { width: 100%; }
+  #info { font-family: ui-monospace, monospace; font-size: 12px; white-space: pre; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div id="panel">
+  <h1>珠洲 1/2 撮影 空中写真 → ODM DSM</h1>
+  <div><b>Terrain / Hillshade</b></div>
+  <label><input type="radio" name="terrain" value="ours" checked> 自作 DSM（ODM）</label>
+  <label><input type="radio" name="terrain" value="gsi"> 地理院 SfM 1mDSM</label>
+  <label><input type="radio" name="terrain" value="none"> なし</label>
+  <div class="row"><b>Raster</b></div>
+  <label><input type="checkbox" id="ortho-gsi"> 地理院 正射画像（珠洲 1/2）</label>
+  <label><input type="checkbox" id="ortho-ours"> 自作 正射画像（ODM）</label>
+  <label><input type="checkbox" id="hillshade" checked> 陰影（terrain と同じソース）</label>
+  <div class="row">
+    誇張 <span id="exag-v">1.5</span>× <input type="range" id="exag" min="0.5" max="4" step="0.1" value="1.5">
+  </div>
+  <div class="row" id="info">クリックで標高を表示</div>
+</div>
+<script>
+// ---- GSI elevation PNG -> Mapbox terrain-RGB, as a MapLibre protocol ---------------------
+// GSI:  h = (R<<16 | G<<8 | B) * 0.01 ; values >= 2^23 are negative (two's complement 24bit);
+//       (128,0,0) = invalid.   Mapbox: h = -10000 + v * 0.1 with v = R<<16 | G<<8 | B.
+maplibregl.addProtocol('gsidem', async (params, abortController) => {
+  const url = params.url.replace(/^gsidem:\/\//, '');
+  const res = await fetch(url, { signal: abortController.signal });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const blob = await res.blob();
+  const bmp = await createImageBitmap(blob);
+  const cv = new OffscreenCanvas(bmp.width, bmp.height);
+  const ctx = cv.getContext('2d');
+  ctx.drawImage(bmp, 0, 0);
+  const img = ctx.getImageData(0, 0, cv.width, cv.height);
+  const d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    let r = d[i], g = d[i + 1], b = d[i + 2];
+    let h;
+    if (r === 128 && g === 0 && b === 0) h = 0;               // invalid -> sea level
+    else {
+      let v = (r << 16) | (g << 8) | b;
+      if (v >= 8388608) v -= 16777216;
+      h = v * 0.01;
+    }
+    let m = Math.round((h + 10000) * 10);
+    d[i] = (m >> 16) & 255; d[i + 1] = (m >> 8) & 255; d[i + 2] = m & 255; d[i + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  const out = await cv.convertToBlob({ type: 'image/png' });
+  return { data: await out.arrayBuffer() };
+});
+
+const PROJECT = new URLSearchParams(location.search).get('project') || 'suzu_0102';
+const OURS_DSM = `../output/${PROJECT}/dsm_tiles/{z}/{x}/{y}.png`;
+const OURS_ORTHO = `../output/${PROJECT}/ortho_tiles/{z}/{x}/{y}.png`;
+
+const style = {
+  version: 8,
+  glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
+  sources: {
+    gsi_std: {
+      type: 'raster', tileSize: 256, maxzoom: 18,
+      tiles: ['https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'],
+      attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>'
+    },
+    gsi_ortho: {
+      type: 'raster', tileSize: 256, minzoom: 10, maxzoom: 18,
+      tiles: ['https://maps.gsi.go.jp/xyz/20240102noto_suzu_0102do/{z}/{x}/{y}.png'],
+      attribution: '国土地理院 令和6年能登半島地震 正射画像'
+    },
+    ours_ortho: { type: 'raster', tileSize: 256, minzoom: 10, maxzoom: 18, tiles: [OURS_ORTHO] },
+    dem_ours: { type: 'raster-dem', tileSize: 256, encoding: 'mapbox', minzoom: 10, maxzoom: 17,
+                tiles: ['gsidem://' + OURS_DSM], attribution: 'ODM DSM (this repo)' },
+    dem_gsi:  { type: 'raster-dem', tileSize: 256, encoding: 'mapbox', minzoom: 10, maxzoom: 15,
+                tiles: ['gsidem://https://maps.gsi.go.jp/xyz/20240102noto_1mDSM/{z}/{x}/{y}.png'],
+                attribution: '国土地理院 SfM 1mDSM' }
+  },
+  layers: [
+    { id: 'gsi_std', type: 'raster', source: 'gsi_std', paint: { 'raster-opacity': 0.9 } },
+    { id: 'gsi_ortho', type: 'raster', source: 'gsi_ortho', layout: { visibility: 'none' } },
+    { id: 'ours_ortho', type: 'raster', source: 'ours_ortho', layout: { visibility: 'none' } },
+    { id: 'hs_ours', type: 'hillshade', source: 'dem_ours',
+      paint: { 'hillshade-exaggeration': 0.6, 'hillshade-shadow-color': '#3a3a3a' } },
+    { id: 'hs_gsi', type: 'hillshade', source: 'dem_gsi', layout: { visibility: 'none' },
+      paint: { 'hillshade-exaggeration': 0.6, 'hillshade-shadow-color': '#3a3a3a' } }
+  ],
+  terrain: { source: 'dem_ours', exaggeration: 1.5 }
+};
+
+const map = new maplibregl.Map({
+  container: 'map', style, center: [137.27, 37.46], zoom: 12, pitch: 55, bearing: -20, hash: true,
+  maxPitch: 85
+});
+map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }));
+map.addControl(new maplibregl.ScaleControl());
+
+fetch(`../output/${PROJECT}/dsm_tiles/metadata.json`).then(r => r.ok ? r.json() : null).then(m => {
+  if (!m) {  // no ODM tiles yet -> fall back to the GSI DSM so the page is not flat
+    document.querySelector('input[name=terrain][value=gsi]').checked = true;
+    map.once('style.load', () => setTerrain('gsi'));
+    if (map.isStyleLoaded()) setTerrain('gsi');
+    document.getElementById('info').textContent = `自作 DSM タイル未生成: output/${PROJECT}/dsm_tiles/`;
+    return;
+  }
+  if (location.hash) return;
+  const [w, s, e, n] = m.bounds_4326;
+  map.fitBounds([[w, s], [e, n]], { padding: 40, pitch: 55, bearing: -20 });
+}).catch(() => {});
+
+function setTerrain(which) {
+  const exag = parseFloat(document.getElementById('exag').value);
+  const hs = document.getElementById('hillshade').checked;
+  map.setLayoutProperty('hs_ours', 'visibility', hs && which === 'ours' ? 'visible' : 'none');
+  map.setLayoutProperty('hs_gsi', 'visibility', hs && which === 'gsi' ? 'visible' : 'none');
+  if (which === 'none') map.setTerrain(null);
+  else map.setTerrain({ source: which === 'ours' ? 'dem_ours' : 'dem_gsi', exaggeration: exag });
+}
+document.querySelectorAll('input[name=terrain]').forEach(el =>
+  el.addEventListener('change', e => setTerrain(e.target.value)));
+document.getElementById('hillshade').addEventListener('change', () =>
+  setTerrain(document.querySelector('input[name=terrain]:checked').value));
+document.getElementById('exag').addEventListener('input', e => {
+  document.getElementById('exag-v').textContent = e.target.value;
+  setTerrain(document.querySelector('input[name=terrain]:checked').value);
+});
+document.getElementById('ortho-gsi').addEventListener('change', e =>
+  map.setLayoutProperty('gsi_ortho', 'visibility', e.target.checked ? 'visible' : 'none'));
+document.getElementById('ortho-ours').addEventListener('change', e =>
+  map.setLayoutProperty('ours_ortho', 'visibility', e.target.checked ? 'visible' : 'none'));
+
+// ---- click: read both DSMs at the point (z15 tiles, decoded directly) ---------------------
+async function sampleGsiPng(urlTpl, lon, lat, z) {
+  const n = 2 ** z;
+  const xf = (lon + 180) / 360 * n;
+  const latr = lat * Math.PI / 180;
+  const yf = (1 - Math.log(Math.tan(latr) + 1 / Math.cos(latr)) / Math.PI) / 2 * n;
+  const x = Math.floor(xf), y = Math.floor(yf);
+  const px = Math.floor((xf - x) * 256), py = Math.floor((yf - y) * 256);
+  const url = urlTpl.replace('{z}', z).replace('{x}', x).replace('{y}', y);
+  const res = await fetch(url);
+  if (!res.ok) return null;
+  const bmp = await createImageBitmap(await res.blob());
+  const cv = new OffscreenCanvas(256, 256); const ctx = cv.getContext('2d');
+  ctx.drawImage(bmp, 0, 0);
+  const [r, g, b] = ctx.getImageData(px, py, 1, 1).data;
+  if (r === 128 && g === 0 && b === 0) return NaN;
+  let v = (r << 16) | (g << 8) | b; if (v >= 8388608) v -= 16777216;
+  return v * 0.01;
+}
+map.on('click', async e => {
+  const { lng, lat } = e.lngLat;
+  const info = document.getElementById('info');
+  info.textContent = '...';
+  const [a, b] = await Promise.all([
+    sampleGsiPng(OURS_DSM, lng, lat, 15),
+    sampleGsiPng('https://maps.gsi.go.jp/xyz/20240102noto_1mDSM/{z}/{x}/{y}.png', lng, lat, 15)
+  ]);
+  const f = v => v == null ? 'no tile' : Number.isNaN(v) ? 'invalid' : v.toFixed(2) + ' m';
+  const d = (a != null && b != null && !Number.isNaN(a) && !Number.isNaN(b)) ? (a - b).toFixed(2) + ' m' : '–';
+  info.textContent = `lon ${lng.toFixed(5)} lat ${lat.toFixed(5)} (z15)\nODM : ${f(a)}\nGSI : ${f(b)}\ndiff: ${d}`;
+});
+</script>
+</body>
+</html>
