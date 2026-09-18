@@ -38,7 +38,7 @@
   </div>
   <div class="row" id="info">クリックで標高を表示</div>
 </div>
-<script>
+<script type="module">
 // ---- GSI elevation PNG -> Mapbox terrain-RGB, as a MapLibre protocol ---------------------
 // GSI:  h = (R<<16 | G<<8 | B) * 0.01 ; values >= 2^23 are negative (two's complement 24bit);
 //       (128,0,0) = invalid.   Mapbox: h = -10000 + v * 0.1 with v = R<<16 | G<<8 | B.
@@ -74,6 +74,15 @@ const PROJECT = new URLSearchParams(location.search).get('project') || 'suzu_010
 const OURS_DSM = `../output/${PROJECT}/dsm_tiles/{z}/{x}/{y}.png`;
 const OURS_ORTHO = `../output/${PROJECT}/ortho_tiles/{z}/{x}/{y}.png`;
 
+// tile metadata (zoom range, bounds) written by 05/07; null when the tiles are not published
+async function loadMeta(kind) {
+  try { const r = await fetch(`../output/${PROJECT}/${kind}/metadata.json`); return r.ok ? await r.json() : null; }
+  catch { return null; }
+}
+const [META_DSM, META_ORTHO] = await Promise.all([loadMeta('dsm_tiles'), loadMeta('ortho_tiles')]);
+const DSM_MAXZOOM = META_DSM?.maxzoom ?? 17;
+const ORTHO_MAXZOOM = META_ORTHO?.maxzoom ?? 17;
+
 const style = {
   version: 8,
   glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
@@ -88,8 +97,9 @@ const style = {
       tiles: ['https://maps.gsi.go.jp/xyz/20240102noto_suzu_0102do/{z}/{x}/{y}.png'],
       attribution: '国土地理院 令和6年能登半島地震 正射画像'
     },
-    ours_ortho: { type: 'raster', tileSize: 256, minzoom: 10, maxzoom: 18, tiles: [OURS_ORTHO] },
-    dem_ours: { type: 'raster-dem', tileSize: 256, encoding: 'mapbox', minzoom: 10, maxzoom: 17,
+    ours_ortho: { type: 'raster', tileSize: 256, minzoom: 10, maxzoom: ORTHO_MAXZOOM, tiles: [OURS_ORTHO],
+                  attribution: 'ODM orthophoto (this repo)' },
+    dem_ours: { type: 'raster-dem', tileSize: 256, encoding: 'mapbox', minzoom: 10, maxzoom: DSM_MAXZOOM,
                 tiles: ['gsidem://' + OURS_DSM], attribution: 'ODM DSM (this repo)' },
     dem_gsi:  { type: 'raster-dem', tileSize: 256, encoding: 'mapbox', minzoom: 10, maxzoom: 15,
                 tiles: ['gsidem://https://maps.gsi.go.jp/xyz/20240102noto_1mDSM/{z}/{x}/{y}.png'],
@@ -114,7 +124,7 @@ const map = new maplibregl.Map({
 map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }));
 map.addControl(new maplibregl.ScaleControl());
 
-fetch(`../output/${PROJECT}/dsm_tiles/metadata.json`).then(r => r.ok ? r.json() : null).then(m => {
+Promise.resolve(META_DSM).then(m => {
   if (!m) {  // no ODM tiles yet -> fall back to the GSI DSM so the page is not flat
     document.querySelector('input[name=terrain][value=gsi]').checked = true;
     map.once('style.load', () => setTerrain('gsi'));
