@@ -1,6 +1,6 @@
 # odm-aerial-photo-sfm
 
-国土地理院の空中写真から OpenDroneMap（SfM）で DSM と正射画像を生成し、
+国土地理院の垂直写真（単写真）から OpenDroneMap（SfM）で DSM と正射画像を生成し、
 地理院標高タイル形式にして地理院公式の SfM DSM と比較する検証リポジトリ。
 点群（LAZ）は ODM の中間生成物として出力されるが、検証対象ではない。
 
