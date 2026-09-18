@@ -52,6 +52,18 @@ python -m http.server 8000
 
 他地区は `--layer` と `--project` を変え、カメラ定義（`config/cameras/`）を UCE/UCO 用に追加する。
 
+## 公開ビューア（GitHub Pages）
+
+https://shiwaku.github.io/odm-aerial-photo-sfm/viewer/
+
+タイル一式（725 MB）は Pages に載せられないため、`gh-pages` ブランチには DSM z10–15（地理院 1mDSM の配信範囲と同じ）と
+正射画像 z10–16 に絞ったコピー（約 155 MB）を置く。ビューアは各 `metadata.json` の `maxzoom` を読むので、
+ローカル（z17 まで）と Pages（縮小版）で同じ HTML が動く。
+
+```powershell
+python scripts/08_publish_pages.py --project suzu_0102 --push   # gh-pages を orphan 1 コミットで force-push
+```
+
 ## 入力データについて
 
 - 垂直写真の所在・諸元は [docs/notes.md §7](docs/notes.md)。写真は EXIF を持たないため、03 で
