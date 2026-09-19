@@ -21,7 +21,7 @@
 05_dsm_to_gsi_tiles.py odm_dem/dsm.tif → EPSG:3857 → 地理院標高タイル PNG（output/<proj>/dsm_tiles/{z}/{x}/{y}.png）
 06_compare_dsm.py      地理院 1mDSM タイルと画素単位で差分 → docs/results-*.md
 07_ortho_to_xyz_tiles.py  odm_orthophoto.tif → XYZ PNG タイル（output/<proj>/ortho_tiles/）
-viewer/index.html      MapLibre で自作 DSM と地理院 1mDSM を terrain/陰影として切替表示
+viewer/index.html      MapLibre で自作 DSM と地理院 1mDSM を terrain/陰影として切替表示（背景: 地理院 最適化ベクトルタイル 淡色地図風, viewer/style/gsi-pale.json）
 ```
 
 入出力・パラメータ・所要時間・失敗と対処・結果まで入れた詳細フロー図（Mermaid）は [docs/design.md §5](docs/design.md#5-処理フロー)。

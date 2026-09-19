@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <title>ODM DSM vs 地理院 1mDSM</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <style>
-  html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+  html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; overscroll-behavior: none; }
   #map { position: absolute; inset: 0; }
   #panel {
     position: absolute; top: 10px; left: 10px; z-index: 1;
-    background: rgba(255,255,255,.92); padding: 10px 12px; border-radius: 6px;
+    background: rgba(255,255,255,.92); color: #222; padding: 10px 12px; border-radius: 6px;
     font-size: 13px; line-height: 1.6; box-shadow: 0 1px 4px rgba(0,0,0,.3); max-width: 300px;
   }
   #panel h1 { font-size: 14px; margin: 0 24px 6px 0; }
@@ -24,9 +24,25 @@
   #panel.collapsed { padding: 0; width: 34px; height: 34px; }
   #panel.collapsed #panel-toggle { top: 6px; right: 6px; }
   #panel label { display: block; cursor: pointer; }
+  #panel input[type=radio], #panel input[type=checkbox] { width: 16px; height: 16px; vertical-align: -3px; margin-right: 6px; }
   #panel .row { margin-top: 6px; border-top: 1px solid #ddd; padding-top: 6px; }
   #panel input[type=range] { width: 100%; }
-  #info { font-family: ui-monospace, monospace; font-size: 12px; white-space: pre; }
+  #panel a { color: #1d508e; }
+  #credit { font-size: 11px; color: #555; }
+  #info { font-family: ui-monospace, monospace; font-size: 12px; white-space: pre-line; }
+  /* phones: full-width sheet at the top, collapsed by default (see script) */
+  @media (max-width: 600px) {
+    #panel {
+      top: 0; left: 0; right: 0; max-width: none; border-radius: 0 0 8px 8px; z-index: 3; /* above the map controls while open */
+      padding: calc(env(safe-area-inset-top) + 10px) 12px 10px;
+      max-height: 60vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    }
+    #panel.collapsed { left: 10px; right: auto; top: calc(env(safe-area-inset-top) + 10px); border-radius: 6px; padding: 0; max-height: none; }
+    #panel-toggle { top: calc(env(safe-area-inset-top) + 6px); width: 34px; height: 34px; line-height: 34px; font-size: 20px; }
+    #panel.collapsed #panel-toggle { top: 0; right: 0; }
+    #panel label { padding: 6px 0; }
+    .maplibregl-ctrl-top-right { top: calc(env(safe-area-inset-top) + 46px); }
+  }
 </style>
 </head>
 <body>
@@ -46,6 +62,7 @@
     誇張 <span id="exag-v">1.0</span>× <input type="range" id="exag" min="0.5" max="4" step="0.1" value="1.0">
   </div>
   <div class="row" id="info">クリックで標高を表示</div>
+  <div class="row" id="credit">背景: <a href="https://github.com/gsi-cyberjapan/optimal_bvmap" target="_blank" rel="noopener">国土地理院 最適化ベクトルタイル</a>（淡色地図風スタイル）</div>
 </div>
 <script type="module">
 // ---- GSI elevation PNG -> Mapbox terrain-RGB, as a MapLibre protocol ---------------------
@@ -80,58 +97,68 @@ maplibregl.addProtocol('gsidem', async (params, abortController) => {
 });
 
 const PROJECT = new URLSearchParams(location.search).get('project') || 'suzu_0102';
-const OURS_DSM = `../output/${PROJECT}/dsm_tiles/{z}/{x}/{y}.png`;
-const OURS_ORTHO = `../output/${PROJECT}/ortho_tiles/{z}/{x}/{y}.png`;
+// Absolute URLs: tile templates are resolved inside MapLibre's worker, where relative paths fail.
+// The {z}/{x}/{y} template is appended after URL resolution (new URL() would percent-encode the braces).
+const OUT = new URL(`../output/${PROJECT}/`, location.href).href;
+const OURS_DSM = OUT + 'dsm_tiles/{z}/{x}/{y}.png';
+const OURS_ORTHO = OUT + 'ortho_tiles/{z}/{x}/{y}.png';
 
 // tile metadata (zoom range, bounds) written by 05/07; null when the tiles are not published
 async function loadMeta(kind) {
   try { const r = await fetch(`../output/${PROJECT}/${kind}/metadata.json`); return r.ok ? await r.json() : null; }
   catch { return null; }
 }
-const [META_DSM, META_ORTHO] = await Promise.all([loadMeta('dsm_tiles'), loadMeta('ortho_tiles')]);
+// Base map: GSI optimal vector tiles (XYZ pbf) with the GSI "pale" style
+// (style/gsi-pale.json, from gsi-cyberjapan/3dpc-3dtiles public/styles/pale.json; source repointed to the XYZ endpoint).
+async function loadBaseStyle() {
+  const r = await fetch(new URL('./style/gsi-pale.json', location.href));
+  if (!r.ok) throw new Error(`GSI style fetch failed: ${r.status}`);
+  return r.json();
+}
+const [META_DSM, META_ORTHO, style] = await Promise.all([loadMeta('dsm_tiles'), loadMeta('ortho_tiles'), loadBaseStyle()]);
 const DSM_MAXZOOM = META_DSM?.maxzoom ?? 17;
 const ORTHO_MAXZOOM = META_ORTHO?.maxzoom ?? 17;
 
-const style = {
-  version: 8,
-  glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
-  sources: {
-    gsi_std: {
-      type: 'raster', tileSize: 256, maxzoom: 18,
-      tiles: ['https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'],
-      attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>'
-    },
-    gsi_ortho: {
-      type: 'raster', tileSize: 256, minzoom: 10, maxzoom: 18,
-      tiles: ['https://maps.gsi.go.jp/xyz/20240102noto_suzu_0102do/{z}/{x}/{y}.png'],
-      attribution: '国土地理院 令和6年能登半島地震 正射画像'
-    },
-    ours_ortho: { type: 'raster', tileSize: 256, minzoom: 10, maxzoom: ORTHO_MAXZOOM, tiles: [OURS_ORTHO],
-                  attribution: 'ODM orthophoto (this repo)' },
-    dem_ours: { type: 'raster-dem', tileSize: 256, encoding: 'mapbox', minzoom: 10, maxzoom: DSM_MAXZOOM,
-                tiles: ['gsidem://' + OURS_DSM], attribution: 'ODM DSM (this repo)' },
-    dem_gsi:  { type: 'raster-dem', tileSize: 256, encoding: 'mapbox', minzoom: 10, maxzoom: 15,
-                tiles: ['gsidem://https://maps.gsi.go.jp/xyz/20240102noto_1mDSM/{z}/{x}/{y}.png'],
-                attribution: '国土地理院 SfM 1mDSM' }
+Object.assign(style.sources, {
+  gsi_ortho: {
+    type: 'raster', tileSize: 256, minzoom: 10, maxzoom: 18,
+    tiles: ['https://maps.gsi.go.jp/xyz/20240102noto_suzu_0102do/{z}/{x}/{y}.png'],
+    attribution: '国土地理院 令和6年能登半島地震 正射画像'
   },
-  layers: [
-    { id: 'gsi_std', type: 'raster', source: 'gsi_std', paint: { 'raster-opacity': 0.9 } },
-    { id: 'gsi_ortho', type: 'raster', source: 'gsi_ortho', layout: { visibility: 'none' } },
-    { id: 'ours_ortho', type: 'raster', source: 'ours_ortho' },
-    { id: 'hs_ours', type: 'hillshade', source: 'dem_ours', layout: { visibility: 'none' },
-      paint: { 'hillshade-exaggeration': 0.6, 'hillshade-shadow-color': '#3a3a3a' } },
-    { id: 'hs_gsi', type: 'hillshade', source: 'dem_gsi', layout: { visibility: 'none' },
-      paint: { 'hillshade-exaggeration': 0.6, 'hillshade-shadow-color': '#3a3a3a' } }
-  ],
-  terrain: { source: 'dem_ours', exaggeration: 1.0 }
-};
+  ours_ortho: { type: 'raster', tileSize: 256, minzoom: 10, maxzoom: ORTHO_MAXZOOM, tiles: [OURS_ORTHO],
+                attribution: 'ODM orthophoto (this repo)' },
+  dem_ours: { type: 'raster-dem', tileSize: 256, encoding: 'mapbox', minzoom: 10, maxzoom: DSM_MAXZOOM,
+              tiles: ['gsidem://' + OURS_DSM], attribution: 'ODM DSM (this repo)' },
+  dem_gsi:  { type: 'raster-dem', tileSize: 256, encoding: 'mapbox', minzoom: 10, maxzoom: 15,
+              tiles: ['gsidem://https://maps.gsi.go.jp/xyz/20240102noto_1mDSM/{z}/{x}/{y}.png'],
+              attribution: '国土地理院 SfM 1mDSM' }
+});
+// Our rasters go above every polygon/line of the base map and below its annotation (symbol) layers.
+const ourLayers = [
+  { id: 'gsi_ortho', type: 'raster', source: 'gsi_ortho', layout: { visibility: 'none' } },
+  { id: 'ours_ortho', type: 'raster', source: 'ours_ortho' },
+  { id: 'hs_ours', type: 'hillshade', source: 'dem_ours', layout: { visibility: 'none' },
+    paint: { 'hillshade-exaggeration': 0.6, 'hillshade-shadow-color': '#3a3a3a' } },
+  { id: 'hs_gsi', type: 'hillshade', source: 'dem_gsi', layout: { visibility: 'none' },
+    paint: { 'hillshade-exaggeration': 0.6, 'hillshade-shadow-color': '#3a3a3a' } }
+];
+let insertAt = style.layers.length;
+while (insertAt > 0 && style.layers[insertAt - 1].type === 'symbol') insertAt--;
+style.layers.splice(insertAt, 0, ...ourLayers);
+style.terrain = { source: 'dem_ours', exaggeration: 1.0 };
 
 const map = new maplibregl.Map({
   container: 'map', style, center: [137.27, 37.46], zoom: 12, pitch: 55, bearing: -20, hash: true,
   maxPitch: 85
 });
 map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }));
+map.addControl(new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: true }));
 map.addControl(new maplibregl.ScaleControl());
+map.touchZoomRotate.enableRotation();  // two-finger rotate / pitch on touch devices
+map.on('error', e => {
+  const err = e && e.error ? e.error : e;
+  console.error('[map error]', err && err.message ? err.message : err, e && e.sourceId ? `source ${e.sourceId}` : '');
+});
 
 Promise.resolve(META_DSM).then(m => {
   if (!m) {  // no ODM tiles yet -> fall back to the GSI DSM so the page is not flat
@@ -154,18 +181,23 @@ function setTerrain(which) {
   if (which === 'none') map.setTerrain(null);
   else map.setTerrain({ source: which === 'ours' ? 'dem_ours' : 'dem_gsi', exaggeration: exag });
 }
-// ---- collapsible panel (state remembered per browser) ------------------------------------
+// ---- collapsible panel (state remembered per browser; phones start collapsed) -------------
 const panel = document.getElementById('panel');
 const toggle = document.getElementById('panel-toggle');
-function setCollapsed(c) {
+const isPhone = window.matchMedia('(max-width: 600px)').matches;
+function setCollapsed(c, remember = true) {
   panel.classList.toggle('collapsed', c);
   toggle.textContent = c ? '☰' : '−';
   toggle.title = toggle.ariaLabel = c ? 'パネルを開く' : 'パネルを閉じる';
   toggle.setAttribute('aria-expanded', String(!c));
-  try { localStorage.setItem('panelCollapsed', c ? '1' : '0'); } catch {}
+  if (remember) { try { localStorage.setItem('panelCollapsed', c ? '1' : '0'); } catch {} }
 }
 toggle.addEventListener('click', () => setCollapsed(!panel.classList.contains('collapsed')));
-try { if (localStorage.getItem('panelCollapsed') === '1') setCollapsed(true); } catch {}
+{
+  let saved = null;
+  try { saved = localStorage.getItem('panelCollapsed'); } catch {}
+  setCollapsed(saved !== null ? saved === '1' : isPhone, false);
+}
 
 document.querySelectorAll('input[name=terrain]').forEach(el =>
   el.addEventListener('change', e => setTerrain(e.target.value)));
@@ -180,7 +212,7 @@ document.getElementById('ortho-gsi').addEventListener('change', e =>
 document.getElementById('ortho-ours').addEventListener('change', e =>
   map.setLayoutProperty('ours_ortho', 'visibility', e.target.checked ? 'visible' : 'none'));
 
-// ---- click: read both DSMs at the point (z15 tiles, decoded directly) ---------------------
+// ---- click / tap: read both DSMs at the point (z15 tiles, decoded directly) ---------------
 async function sampleGsiPng(urlTpl, lon, lat, z) {
   const n = 2 ** z;
   const xf = (lon + 180) / 360 * n;
