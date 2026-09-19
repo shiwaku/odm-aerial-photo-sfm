@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 330" role="img" aria-label="133 枚の写真から、特徴点抽出、マッチング、増分再構成を経てカメラ姿勢と疎点群が得られる。ここまでが SfM。その後 MVS で密点群を作り DSM と正射画像になる">
+<style>
+  svg{color:#1B2431;font-family:"BIZ UDPGothic","Yu Gothic UI","Hiragino Sans","Noto Sans JP",sans-serif}
+  text{fill:#1B2431;font-size:12px}
+  text.s{font-size:11px;fill:#5F6D7B}
+  text.m{font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px}
+  .b{font-weight:700}
+  .ac{stroke:#1F7A6D} .acf{fill:#1F7A6D} .act{fill:#1F7A6D;font-weight:700}
+  .wn{stroke:#B5541C} .wnf{fill:#B5541C} .wnt{fill:#B5541C;font-weight:700}
+  .gp{stroke:#3A5FA8} .gpt{fill:#3A5FA8}
+  .mu{stroke:#5F6D7B}
+  .ln{stroke:#CBD3D9}
+  .panel{fill:#FFFFFF} .soft{fill:#D9EEE9}
+  .bgf{fill:#F5F7F4}
+</style>
+<rect width="980" height="330" fill="#FFFFFF"/>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker>
+  </defs>
+  <rect x="192" y="28" width="738" height="150" rx="8" fill="none" class="ac" stroke-dasharray="6 4" stroke-width="1.5"/>
+  <text x="200" y="20" class="act">ここまでが SfM（ODM の opensfm ステージ、計 9.6 分）</text>
+  <rect x="20" y="60" width="150" height="90" rx="6" class="panel" stroke="currentColor" stroke-width="1.5"/>
+  <text x="95" y="86" text-anchor="middle" class="b">垂直写真 133 枚</text>
+  <text x="95" y="106" text-anchor="middle" class="s">EXIF に GPS・焦点距離を注入</text>
+  <text x="95" y="124" text-anchor="middle" class="s">geo.txt で概略位置を与える</text>
+  <line x1="170" y1="105" x2="203" y2="105" stroke="currentColor" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="205" y="60" width="150" height="90" rx="6" class="panel" stroke="currentColor" stroke-width="1.5"/>
+  <text x="280" y="82" text-anchor="middle" class="b">① 特徴点抽出</text>
+  <text x="280" y="100" text-anchor="middle" class="s">SIFT（GPU、3216 px に縮小）</text>
+  <text x="280" y="118" text-anchor="middle" class="s">1 枚 12,000 点以上</text>
+  <text x="280" y="138" text-anchor="middle" class="m">68 s</text>
+  <line x1="355" y1="105" x2="388" y2="105" stroke="currentColor" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="390" y="60" width="150" height="90" rx="6" class="panel" stroke="currentColor" stroke-width="1.5"/>
+  <text x="465" y="82" text-anchor="middle" class="b">② マッチング</text>
+  <text x="465" y="100" text-anchor="middle" class="s">FLANN。GPS で近い 12 枚とだけ</text>
+  <text x="465" y="118" text-anchor="middle" class="s">誤対応は幾何検証で除去</text>
+  <text x="465" y="138" text-anchor="middle" class="m">54 s</text>
+  <line x1="540" y1="105" x2="573" y2="105" stroke="currentColor" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="575" y="60" width="150" height="90" rx="6" class="panel" stroke="currentColor" stroke-width="1.5"/>
+  <text x="650" y="82" text-anchor="middle" class="b">③ 増分再構成</text>
+  <text x="650" y="100" text-anchor="middle" class="s">2 枚から始めて 1 枚ずつ追加</text>
+  <text x="650" y="118" text-anchor="middle" class="s">三角測量 + バンドル調整</text>
+  <text x="650" y="138" text-anchor="middle" class="m">209 s</text>
+  <line x1="725" y1="105" x2="758" y2="105" stroke="currentColor" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="760" y="60" width="150" height="90" rx="6" class="soft" stroke="#1F7A6D" stroke-width="1.5"/>
+  <text x="835" y="82" text-anchor="middle" class="b">カメラ姿勢 + 疎点群</text>
+  <text x="835" y="100" text-anchor="middle" class="s">再構成 100 / 133 枚</text>
+  <text x="835" y="118" text-anchor="middle" class="s">280,685 点</text>
+  <text x="835" y="138" text-anchor="middle" class="m">再投影誤差 0.54 px</text>
+  <line x1="835" y1="150" x2="835" y2="218" stroke="currentColor" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="845" y="200" class="s">土台として渡す</text>
+  <rect x="760" y="220" width="150" height="80" rx="6" class="panel" stroke="currentColor" stroke-width="1.5"/>
+  <text x="835" y="244" text-anchor="middle" class="b">④ MVS 密化</text>
+  <text x="835" y="262" text-anchor="middle" class="s">openmvs。全画素で奥行き推定</text>
+  <text x="835" y="280" text-anchor="middle" class="m">25.9 M 点 / 5.9 分</text>
+  <line x1="760" y1="260" x2="727" y2="260" stroke="currentColor" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="575" y="220" width="150" height="80" rx="6" class="panel" stroke="currentColor" stroke-width="1.5"/>
+  <text x="650" y="244" text-anchor="middle" class="b">メッシュ → DSM・正射画像</text>
+  <text x="650" y="262" text-anchor="middle" class="s">odm_dem/dsm.tif</text>
+  <text x="650" y="280" text-anchor="middle" class="s">odm_orthophoto.tif</text>
+  <line x1="575" y1="260" x2="542" y2="260" stroke="currentColor" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="390" y="220" width="150" height="80" rx="6" class="panel" stroke="currentColor" stroke-width="1.5"/>
+  <text x="465" y="244" text-anchor="middle" class="b">ジオリファレンス</text>
+  <text x="465" y="262" text-anchor="middle" class="s">UTM 53N（EPSG:32653）</text>
+  <text x="465" y="280" text-anchor="middle" class="s">GPS 残差 x 4.4 / y 25.1 / z 4.7 m</text>
+  <text x="20" y="262" class="s">下段は SfM の後工程。</text>
+  <text x="20" y="280" class="s">SfM が出すのは右上の「カメラ姿勢 + 疎点群」まで。</text>
+</svg>

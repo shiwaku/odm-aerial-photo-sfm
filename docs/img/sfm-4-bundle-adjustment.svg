@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 270" role="img" aria-label="2 台のカメラから 3D 点への視線が像面を貫く位置（予測）と、実際に検出された特徴点の位置（観測）がわずかにずれている。このずれが再投影誤差">
+<style>
+  svg{color:#1B2431;font-family:"BIZ UDPGothic","Yu Gothic UI","Hiragino Sans","Noto Sans JP",sans-serif}
+  text{fill:#1B2431;font-size:12px}
+  text.s{font-size:11px;fill:#5F6D7B}
+  text.m{font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px}
+  .b{font-weight:700}
+  .ac{stroke:#1F7A6D} .acf{fill:#1F7A6D} .act{fill:#1F7A6D;font-weight:700}
+  .wn{stroke:#B5541C} .wnf{fill:#B5541C} .wnt{fill:#B5541C;font-weight:700}
+  .gp{stroke:#3A5FA8} .gpt{fill:#3A5FA8}
+  .mu{stroke:#5F6D7B}
+  .ln{stroke:#CBD3D9}
+  .panel{fill:#FFFFFF} .soft{fill:#D9EEE9}
+  .bgf{fill:#F5F7F4}
+</style>
+<rect width="720" height="270" fill="#FFFFFF"/>
+  <g stroke="currentColor" stroke-width="1.5">
+    <rect x="104" y="41" width="32" height="18" rx="3" class="panel"/><circle cx="120" cy="59" r="4" class="panel"/>
+    <rect x="584" y="41" width="32" height="18" rx="3" class="panel"/><circle cx="600" cy="59" r="4" class="panel"/>
+  </g>
+  <text x="120" y="30" text-anchor="middle" class="b">カメラ i（位置・向きは仮の値）</text>
+  <text x="600" y="30" text-anchor="middle" class="b">カメラ j</text>
+  <line x1="40" y1="120" x2="320" y2="120" stroke="currentColor" stroke-width="2"/>
+  <line x1="400" y1="120" x2="680" y2="120" stroke="currentColor" stroke-width="2"/>
+  <line x1="120" y1="50" x2="520" y2="220" class="ac" stroke-width="1.5" stroke-dasharray="6 3"/>
+  <line x1="600" y1="50" x2="520" y2="220" class="ac" stroke-width="1.5" stroke-dasharray="6 3"/>
+  <circle cx="520" cy="220" r="6" class="acf"/>
+  <text x="532" y="215" class="act">3D 点（仮の座標）</text>
+  <text x="532" y="232" class="s">これを像面に投影し直す＝再投影</text>
+  <circle cx="284.7" cy="120" r="5" class="panel" stroke="#1F7A6D" stroke-width="2"/>
+  <circle cx="300" cy="120" r="5" class="wnf"/>
+  <circle cx="563.5" cy="120" r="5" class="panel" stroke="#1F7A6D" stroke-width="2"/>
+  <circle cx="552" cy="120" r="5" class="wnf"/>
+  <path d="M284.7 140 L300 140 M284.7 135 L284.7 145 M300 135 L300 145" class="wn" stroke-width="1.5" fill="none"/>
+  <text x="292" y="162" text-anchor="middle" class="wnt">再投影誤差</text>
+  <path d="M552 140 L563.5 140 M552 135 L552 145 M563.5 135 L563.5 145" class="wn" stroke-width="1.5" fill="none"/>
+  <text x="558" y="162" text-anchor="middle" class="wnt">再投影誤差</text>
+  <circle cx="52" cy="200" r="5" class="panel" stroke="#1F7A6D" stroke-width="2"/><text x="64" y="204" class="s">予測：仮のカメラ姿勢と仮の 3D 座標から計算した写り位置</text>
+  <circle cx="52" cy="224" r="5" class="wnf"/><text x="64" y="228" class="s">観測：写真で実際に検出された特徴点の位置</text>
+  <text x="52" y="256" class="b">全カメラ・全点で、この誤差の二乗和が最小になるよう姿勢と座標を同時に動かす → バンドル調整</text>
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 290" role="img" aria-label="隣り合う 2 枚の写真の特徴点が線で対応付けられている。1 本は誤対応で、幾何検証で除去される">
+<style>
+  svg{color:#1B2431;font-family:"BIZ UDPGothic","Yu Gothic UI","Hiragino Sans","Noto Sans JP",sans-serif}
+  text{fill:#1B2431;font-size:12px}
+  text.s{font-size:11px;fill:#5F6D7B}
+  text.m{font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px}
+  .b{font-weight:700}
+  .ac{stroke:#1F7A6D} .acf{fill:#1F7A6D} .act{fill:#1F7A6D;font-weight:700}
+  .wn{stroke:#B5541C} .wnf{fill:#B5541C} .wnt{fill:#B5541C;font-weight:700}
+  .gp{stroke:#3A5FA8} .gpt{fill:#3A5FA8}
+  .mu{stroke:#5F6D7B}
+  .ln{stroke:#CBD3D9}
+  .panel{fill:#FFFFFF} .soft{fill:#D9EEE9}
+  .bgf{fill:#F5F7F4}
+</style>
+<rect width="720" height="290" fill="#FFFFFF"/>
+  <rect x="30" y="30" width="300" height="200" rx="4" class="panel" stroke="currentColor" stroke-width="1.5"/>
+  <text x="36" y="22" class="b">写真 A</text>
+  <path d="M90 140 L90 90 L150 60 L210 90 L210 140 Z" fill="none" stroke="currentColor" stroke-width="1.2"/>
+  <line x1="60" y1="200" x2="300" y2="180" class="mu" stroke-width="1.2"/>
+  <line x1="240" y1="70" x2="300" y2="100" class="mu" stroke-width="1.2"/>
+  <rect x="390" y="30" width="300" height="200" rx="4" class="panel" stroke="currentColor" stroke-width="1.5"/>
+  <text x="396" y="22" class="b">写真 B（隣の 1 枚。60% が重なる）</text>
+  <path d="M410 150 L410 100 L470 70 L530 100 L530 150 Z" fill="none" stroke="currentColor" stroke-width="1.2"/>
+  <line x1="400" y1="210" x2="640" y2="190" class="mu" stroke-width="1.2"/>
+  <line x1="560" y1="80" x2="620" y2="110" class="mu" stroke-width="1.2"/>
+  <line x1="150" y1="60" x2="470" y2="70" class="ac" stroke-width="1.5"/>
+  <line x1="210" y1="90" x2="530" y2="100" class="ac" stroke-width="1.5"/>
+  <line x1="90" y1="140" x2="410" y2="150" class="ac" stroke-width="1.5"/>
+  <line x1="240" y1="70" x2="560" y2="80" class="ac" stroke-width="1.5"/>
+  <line x1="300" y1="180" x2="640" y2="190" class="ac" stroke-width="1.5"/>
+  <line x1="60" y1="200" x2="620" y2="110" class="wn" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <g class="acf">
+    <circle cx="150" cy="60" r="4.5"/><circle cx="210" cy="90" r="4.5"/><circle cx="90" cy="140" r="4.5"/><circle cx="240" cy="70" r="4.5"/><circle cx="300" cy="180" r="4.5"/>
+  </g>
+  <circle cx="60" cy="200" r="4.5" class="wnf"/>
+  <g class="acf">
+    <circle cx="470" cy="70" r="4.5"/><circle cx="530" cy="100" r="4.5"/><circle cx="410" cy="150" r="4.5"/><circle cx="560" cy="80" r="4.5"/><circle cx="640" cy="190" r="4.5"/>
+  </g>
+  <circle cx="620" cy="110" r="4.5" class="wnf"/>
+  <text x="360" y="252" text-anchor="middle" class="act">同じ地物 → 対応（他の対応と幾何的に整合する）</text>
+  <text x="360" y="272" text-anchor="middle" class="wnt">似た模様だが別物 → 誤対応。全体と整合しないので除去（RANSAC）</text>
+</svg>

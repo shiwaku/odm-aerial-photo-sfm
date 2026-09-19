@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" role="img" aria-label="上空の 2 台のカメラから屋根の角 P へ向かう視線が 1 点で交わる。各写真の像面では P の写る位置が中心からずれており、そのずれが視差">
+<style>
+  svg{color:#1B2431;font-family:"BIZ UDPGothic","Yu Gothic UI","Hiragino Sans","Noto Sans JP",sans-serif}
+  text{fill:#1B2431;font-size:12px}
+  text.s{font-size:11px;fill:#5F6D7B}
+  text.m{font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px}
+  .b{font-weight:700}
+  .ac{stroke:#1F7A6D} .acf{fill:#1F7A6D} .act{fill:#1F7A6D;font-weight:700}
+  .wn{stroke:#B5541C} .wnf{fill:#B5541C} .wnt{fill:#B5541C;font-weight:700}
+  .gp{stroke:#3A5FA8} .gpt{fill:#3A5FA8}
+  .mu{stroke:#5F6D7B}
+  .ln{stroke:#CBD3D9}
+  .panel{fill:#FFFFFF} .soft{fill:#D9EEE9}
+  .bgf{fill:#F5F7F4}
+</style>
+<rect width="720" height="340" fill="#FFFFFF"/>
+  <line x1="200" y1="50" x2="520" y2="50" class="mu" stroke-dasharray="4 4" stroke-width="1"/>
+  <text x="360" y="38" text-anchor="middle" class="s">カメラ間の距離（基線）。撮影間隔ぶん離れている</text>
+  <g>
+    <rect x="184" y="41" width="32" height="18" rx="3" class="panel" stroke="currentColor" stroke-width="1.5"/>
+    <circle cx="200" cy="59" r="4" class="panel" stroke="currentColor" stroke-width="1.5"/>
+    <text x="200" y="22" text-anchor="middle" class="b">写真 A のカメラ</text>
+    <rect x="504" y="41" width="32" height="18" rx="3" class="panel" stroke="currentColor" stroke-width="1.5"/>
+    <circle cx="520" cy="59" r="4" class="panel" stroke="currentColor" stroke-width="1.5"/>
+    <text x="520" y="22" text-anchor="middle" class="b">写真 B のカメラ</text>
+  </g>
+  <line x1="130" y1="100" x2="270" y2="100" stroke="currentColor" stroke-width="2"/>
+  <line x1="450" y1="100" x2="590" y2="100" stroke="currentColor" stroke-width="2"/>
+  <line x1="200" y1="94" x2="200" y2="106" class="mu" stroke-width="1"/>
+  <line x1="520" y1="94" x2="520" y2="106" class="mu" stroke-width="1"/>
+  <text x="128" y="118" class="s">像面（写真 A）</text>
+  <text x="448" y="118" class="s">像面（写真 B）</text>
+  <line x1="200" y1="50" x2="380" y2="250" class="ac" stroke-width="2"/>
+  <line x1="520" y1="50" x2="380" y2="250" class="ac" stroke-width="2"/>
+  <circle cx="245" cy="100" r="4.5" class="acf"/>
+  <circle cx="485" cy="100" r="4.5" class="acf"/>
+  <path d="M200 86 L245 86 M200 82 L200 90 M245 82 L245 90" class="wn" stroke-width="1.5" fill="none"/>
+  <path d="M485 86 L520 86 M485 82 L485 90 M520 82 L520 90" class="wn" stroke-width="1.5" fill="none"/>
+  <text x="222" y="76" text-anchor="middle" class="wnt" style="font-size:11px">中心からのずれ</text>
+  <text x="503" y="76" text-anchor="middle" class="wnt" style="font-size:11px">ずれ（向きが逆）</text>
+  <text x="270" y="140" class="s">A では中心より右、B では中心より左に写る。このずれ方が奥行きを教える</text>
+  <line x1="60" y1="300" x2="660" y2="300" stroke="currentColor" stroke-width="2"/>
+  <rect x="340" y="250" width="80" height="50" class="bgf" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="380" cy="250" r="5.5" class="acf"/>
+  <text x="392" y="246" class="act">P（屋根の角）</text>
+  <text x="392" y="262" class="s">2 本の視線の交点 = P の 3D 座標</text>
+  <text x="60" y="322" class="s">地表</text>
+  <text x="660" y="322" text-anchor="end" class="s">写真の中心近くほど視線は垂直、周辺ほど斜め</text>
+</svg>
