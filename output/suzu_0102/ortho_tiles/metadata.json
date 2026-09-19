@@ -1,0 +1,23 @@
+{
+  "name": "suzu_0102 orthophoto (ODM)",
+  "tile_url": "{z}/{x}/{y}.png",
+  "minzoom": 10,
+  "maxzoom": 16,
+  "bounds_4326": [
+    137.13407,
+    37.370903,
+    137.323498,
+    37.527927
+  ],
+  "tiles_per_zoom": {
+    "16": 792,
+    "15": 214,
+    "14": 61,
+    "13": 20,
+    "12": 7,
+    "11": 3,
+    "10": 2
+  },
+  "attribution": "国土地理院 空中写真（令和6年能登半島地震）を OpenDroneMap で処理",
+  "published": "github-pages (zoom-limited copy)"
+}
