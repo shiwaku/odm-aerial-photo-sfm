@@ -9,6 +9,7 @@
 
 - [docs/design.md](docs/design.md) — 設計書（データ諸元・処理フロー・パラメータ根拠）
 - [docs/notes.md](docs/notes.md) — 調査メモ（参照記事・地理院データの所在・2022→現在の差分）
+- [docs/sfm-explained.md](docs/sfm-explained.md) — SfM のしくみ図解（特徴点・マッチング・バンドル調整・高さオフセットの理由を珠洲の数値で）
 
 ## 処理フロー
 

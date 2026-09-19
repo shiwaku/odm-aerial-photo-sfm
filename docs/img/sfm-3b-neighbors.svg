@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" role="img" aria-label="7 コース×多数の撮影点を格子状に描き、1 枚の写真が GPS 近傍 12 枚とだけマッチングされる様子。格子の両端と海上の写真は灰色で、再構成から外れた">
+<style>
+  svg{color:#1B2431;font-family:"BIZ UDPGothic","Yu Gothic UI","Hiragino Sans","Noto Sans JP",sans-serif}
+  text{fill:#1B2431;font-size:12px}
+  text.s{font-size:11px;fill:#5F6D7B}
+  text.m{font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px}
+  .b{font-weight:700}
+  .ac{stroke:#1F7A6D} .acf{fill:#1F7A6D} .act{fill:#1F7A6D;font-weight:700}
+  .wn{stroke:#B5541C} .wnf{fill:#B5541C} .wnt{fill:#B5541C;font-weight:700}
+  .gp{stroke:#3A5FA8} .gpt{fill:#3A5FA8}
+  .mu{stroke:#5F6D7B}
+  .ln{stroke:#CBD3D9}
+  .panel{fill:#FFFFFF} .soft{fill:#D9EEE9}
+  .bgf{fill:#F5F7F4}
+</style>
+<rect width="720" height="320" fill="#FFFFFF"/>
+  <text x="20" y="22" class="b">撮影点（主点）を GPS 座標で並べたもの。7 コース、主点間隔 約 1,050 m</text>
+  <text x="590" y="24" class="s">↑ C01 最東端は海上</text>
+  <g class="ac" stroke-width="1.2">
+    <line x1="300" y1="168" x2="250" y2="168"/><line x1="300" y1="168" x2="350" y2="168"/>
+    <line x1="300" y1="168" x2="300" y2="130"/><line x1="300" y1="168" x2="300" y2="206"/>
+    <line x1="300" y1="168" x2="250" y2="130"/><line x1="300" y1="168" x2="350" y2="130"/>
+    <line x1="300" y1="168" x2="250" y2="206"/><line x1="300" y1="168" x2="350" y2="206"/>
+    <line x1="300" y1="168" x2="300" y2="92"/><line x1="300" y1="168" x2="300" y2="244"/>
+    <line x1="300" y1="168" x2="200" y2="168"/><line x1="300" y1="168" x2="400" y2="168"/>
+  </g>
+  <g class="panel" stroke="currentColor" stroke-width="1.2">
+    <circle cx="100" cy="54" r="6"/><circle cx="150" cy="54" r="6"/><circle cx="200" cy="54" r="6"/><circle cx="250" cy="54" r="6"/><circle cx="300" cy="54" r="6"/><circle cx="350" cy="54" r="6"/><circle cx="400" cy="54" r="6"/><circle cx="450" cy="54" r="6"/>
+    <circle cx="100" cy="92" r="6"/><circle cx="150" cy="92" r="6"/><circle cx="200" cy="92" r="6"/><circle cx="250" cy="92" r="6"/><circle cx="300" cy="92" r="6"/><circle cx="350" cy="92" r="6"/><circle cx="400" cy="92" r="6"/><circle cx="450" cy="92" r="6"/><circle cx="500" cy="92" r="6"/><circle cx="550" cy="92" r="6"/>
+    <circle cx="100" cy="130" r="6"/><circle cx="150" cy="130" r="6"/><circle cx="200" cy="130" r="6"/><circle cx="250" cy="130" r="6"/><circle cx="300" cy="130" r="6"/><circle cx="350" cy="130" r="6"/><circle cx="400" cy="130" r="6"/><circle cx="450" cy="130" r="6"/><circle cx="500" cy="130" r="6"/><circle cx="550" cy="130" r="6"/>
+    <circle cx="100" cy="168" r="6"/><circle cx="150" cy="168" r="6"/><circle cx="200" cy="168" r="6"/><circle cx="250" cy="168" r="6"/><circle cx="350" cy="168" r="6"/><circle cx="400" cy="168" r="6"/><circle cx="450" cy="168" r="6"/><circle cx="500" cy="168" r="6"/><circle cx="550" cy="168" r="6"/>
+    <circle cx="100" cy="206" r="6"/><circle cx="150" cy="206" r="6"/><circle cx="200" cy="206" r="6"/><circle cx="250" cy="206" r="6"/><circle cx="300" cy="206" r="6"/><circle cx="350" cy="206" r="6"/><circle cx="400" cy="206" r="6"/><circle cx="450" cy="206" r="6"/><circle cx="500" cy="206" r="6"/><circle cx="550" cy="206" r="6"/>
+    <circle cx="100" cy="244" r="6"/><circle cx="150" cy="244" r="6"/><circle cx="200" cy="244" r="6"/><circle cx="250" cy="244" r="6"/><circle cx="300" cy="244" r="6"/><circle cx="350" cy="244" r="6"/><circle cx="400" cy="244" r="6"/><circle cx="450" cy="244" r="6"/><circle cx="500" cy="244" r="6"/><circle cx="550" cy="244" r="6"/>
+    <circle cx="100" cy="282" r="6"/><circle cx="150" cy="282" r="6"/><circle cx="200" cy="282" r="6"/><circle cx="250" cy="282" r="6"/><circle cx="300" cy="282" r="6"/><circle cx="350" cy="282" r="6"/><circle cx="400" cy="282" r="6"/><circle cx="450" cy="282" r="6"/><circle cx="500" cy="282" r="6"/><circle cx="550" cy="282" r="6"/>
+  </g>
+  <g class="ln" fill="#CBD3D9" stroke-width="1">
+    <circle cx="50" cy="54" r="6"/><circle cx="500" cy="54" r="6"/><circle cx="550" cy="54" r="6"/><circle cx="600" cy="54" r="6"/><circle cx="650" cy="54" r="6"/>
+    <circle cx="50" cy="92" r="6"/><circle cx="600" cy="92" r="6"/>
+    <circle cx="50" cy="130" r="6"/><circle cx="600" cy="130" r="6"/>
+    <circle cx="50" cy="168" r="6"/><circle cx="600" cy="168" r="6"/>
+    <circle cx="50" cy="206" r="6"/><circle cx="600" cy="206" r="6"/>
+    <circle cx="50" cy="244" r="6"/><circle cx="600" cy="244" r="6"/>
+    <circle cx="50" cy="282" r="6"/><circle cx="600" cy="282" r="6"/>
+  </g>
+  <circle cx="300" cy="168" r="7.5" class="acf"/>
+  <text x="312" y="160" class="act">この 1 枚</text>
+  <text x="312" y="176" class="s">GPS が近い 12 枚とだけ照合</text>
+  <circle cx="60" cy="308" r="6" class="panel" stroke="currentColor" stroke-width="1.2"/><text x="72" y="312" class="s">再構成できた 100 枚</text>
+  <circle cx="210" cy="308" r="6" fill="#CBD3D9" class="ln"/><text x="222" y="312" class="s">外れた 33 枚：各コース両端（近傍が片側にしか無い）と海上（特徴点が取れない）</text>
+</svg>

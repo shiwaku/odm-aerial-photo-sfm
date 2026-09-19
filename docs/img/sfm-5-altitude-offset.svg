@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 350" role="img" aria-label="実際のカメラ高度と geo.txt に書いた高度の差だけ、再構成された地表が実際の地表より一律に下がる。カメラ間の水平距離は GPS で正しいので形と縮尺は変わらない">
+<style>
+  svg{color:#1B2431;font-family:"BIZ UDPGothic","Yu Gothic UI","Hiragino Sans","Noto Sans JP",sans-serif}
+  text{fill:#1B2431;font-size:12px}
+  text.s{font-size:11px;fill:#5F6D7B}
+  text.m{font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px}
+  .b{font-weight:700}
+  .ac{stroke:#1F7A6D} .acf{fill:#1F7A6D} .act{fill:#1F7A6D;font-weight:700}
+  .wn{stroke:#B5541C} .wnf{fill:#B5541C} .wnt{fill:#B5541C;font-weight:700}
+  .gp{stroke:#3A5FA8} .gpt{fill:#3A5FA8}
+  .mu{stroke:#5F6D7B}
+  .ln{stroke:#CBD3D9}
+  .panel{fill:#FFFFFF} .soft{fill:#D9EEE9}
+  .bgf{fill:#F5F7F4}
+</style>
+<rect width="760" height="350" fill="#FFFFFF"/>
+  <defs>
+    <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#B5541C"/></marker>
+  </defs>
+  <g class="mu" stroke-width="1.5" stroke-dasharray="4 3" fill="none">
+    <rect x="164" y="31" width="32" height="18" rx="3"/><rect x="364" y="31" width="32" height="18" rx="3"/><rect x="564" y="31" width="32" height="18" rx="3"/>
+  </g>
+  <text x="150" y="44" class="s" text-anchor="end">実際の高度 ≈ 4,687 m</text>
+  <g stroke-width="1.5" class="gp">
+    <rect x="164" y="101" width="32" height="18" rx="3" class="panel"/><rect x="364" y="101" width="32" height="18" rx="3" class="panel"/><rect x="564" y="101" width="32" height="18" rx="3" class="panel"/>
+  </g>
+  <text x="150" y="114" class="gpt" text-anchor="end" style="font-weight:700">geo.txt の高度 4,223 m</text>
+  <line x1="196" y1="130" x2="364" y2="130" class="gp" stroke-width="1.2"/>
+  <line x1="396" y1="130" x2="564" y2="130" class="gp" stroke-width="1.2"/>
+  <text x="280" y="146" text-anchor="middle" class="gpt" style="font-size:11px">主点間隔 ≈ 1,050 m（GPS 経緯度から）</text>
+  <text x="480" y="146" text-anchor="middle" class="gpt" style="font-size:11px">→ 縮尺はこの距離で決まる</text>
+  <line x1="40" y1="250" x2="720" y2="250" class="mu" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="44" y="243" class="s">実際の地表</text>
+  <line x1="40" y1="320" x2="720" y2="320" stroke="currentColor" stroke-width="2"/>
+  <text x="44" y="338" class="b">ODM が出した DSM（形は同じ、位置だけ下）</text>
+  <g class="mu" stroke-width="1" stroke-dasharray="4 3">
+    <line x1="180" y1="49" x2="85" y2="250"/><line x1="180" y1="49" x2="275" y2="250"/>
+    <line x1="380" y1="49" x2="285" y2="250"/><line x1="380" y1="49" x2="475" y2="250"/>
+    <line x1="580" y1="49" x2="485" y2="250"/><line x1="580" y1="49" x2="675" y2="250"/>
+  </g>
+  <g class="ac" stroke-width="1.2">
+    <line x1="180" y1="119" x2="85" y2="320"/><line x1="180" y1="119" x2="275" y2="320"/>
+    <line x1="380" y1="119" x2="285" y2="320"/><line x1="380" y1="119" x2="475" y2="320"/>
+    <line x1="580" y1="119" x2="485" y2="320"/><line x1="580" y1="119" x2="675" y2="320"/>
+  </g>
+  <line x1="700" y1="254" x2="700" y2="316" class="wn" stroke-width="2" marker-end="url(#arr2)" marker-start="url(#arr2)"/>
+  <text x="708" y="290" class="wnt">−463.7 m</text>
+  <line x1="700" y1="52" x2="700" y2="106" class="wn" stroke-width="2" marker-end="url(#arr2)" marker-start="url(#arr2)"/>
+  <text x="708" y="82" class="wnt">≈ 464 m</text>
+  <text x="380" y="200" text-anchor="middle" class="s">カメラ同士の相対関係（角度・間隔）は写真と GPS 経緯度で正しく決まる。</text>
+  <text x="380" y="218" text-anchor="middle" class="s">高度だけが全カメラ一律に低いので、モデルごと同じ量だけ沈む。</text>
+</svg>
