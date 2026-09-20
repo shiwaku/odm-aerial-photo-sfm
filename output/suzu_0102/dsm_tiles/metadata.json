@@ -1,0 +1,31 @@
+{
+  "name": "suzu_0102 DSM (ODM)",
+  "format": "gsi-elevation-png",
+  "tile_url": "{z}/{x}/{y}.png",
+  "minzoom": 10,
+  "maxzoom": 15,
+  "bounds_4326": [
+    137.134069,
+    37.370909,
+    137.3235,
+    37.527935
+  ],
+  "bounds_3857": [
+    15265694.7,
+    4490933.6,
+    15286782.1,
+    4512951.9
+  ],
+  "tiles_per_zoom": {
+    "15": 214,
+    "14": 61,
+    "13": 20,
+    "12": 7,
+    "11": 3,
+    "10": 2
+  },
+  "z_offset_m": 463.67,
+  "source_dsm": "datasets\\suzu_0102\\odm_dem\\dsm.tif",
+  "attribution": "国土地理院 空中写真（令和6年能登半島地震）を OpenDroneMap で処理",
+  "published": "github-pages (zoom-limited copy)"
+}
