@@ -1,12 +1,16 @@
 """[G] Build (and optionally push) the GitHub Pages site: viewer + a zoom-limited copy of the tiles.
 
 Usage:
-  python scripts/08_publish_pages.py --project suzu_0102 [--dsm-maxzoom 15] [--ortho-maxzoom 16]
+  python scripts/08_publish_pages.py --project suzu_0102 [--dsm-maxzoom 15] [--ortho-maxzoom 17]
       [--out <dir>] [--push] [--branch gh-pages]
 
-Full tile sets are too big for Pages (suzu_0102: DSM 293 MB, ortho 432 MB, mostly z16-17), so
+Full tile sets are too big for Pages (suzu_0102: DSM 293 MB, ortho 1437 MB, z18 alone 980 MB), so
 this copies only z <= the given max zooms (defaults: DSM z15 = the range GSI serves its 1mDSM at,
-ortho z16) and rewrites each metadata.json so the viewer picks up the reduced maxzoom.
+ortho z17) and rewrites each metadata.json so the viewer picks up the reduced maxzoom.
+
+The ortho default was z16 while the orthophoto was 1.234 m/px (ODM capped it from the qv input's
+estimated GSD). Since the 70 cm re-render (--ignore-gsd) z17 carries real detail rather than
+upsampling, so it is worth the 462 MB it costs; z18 (980 MB on its own) does not fit Pages.
 
 Site layout (relative paths in viewer/index.html keep working):
   /index.html                     -> redirect to viewer/
@@ -66,7 +70,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--project", required=True)
     ap.add_argument("--dsm-maxzoom", type=int, default=15)
-    ap.add_argument("--ortho-maxzoom", type=int, default=16)
+    ap.add_argument("--ortho-maxzoom", type=int, default=17)
     ap.add_argument("--out", type=Path, default=None, help="build directory (default: temp dir)")
     ap.add_argument("--push", action="store_true", help="commit as orphan branch and force-push to origin")
     ap.add_argument("--branch", default="gh-pages")
